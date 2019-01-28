@@ -78,6 +78,23 @@ repository.
 Refer to README.md for more information.
 ''')
 
+def download_gyb():
+    if not os.path.exists(GYB_EXEC):
+        print('** Downloading gyb **')
+
+        # Get the current branch/tag name
+        # gitprocess = subprocess.Popen(['git name-rev --name-only HEAD'], shell=True, stdout=subprocess.PIPE)
+        # gitprocess.wait()
+        # tagname = gitprocess.stdout.read()
+
+        # Try to download tarball with the matching branch/tag
+        utils_directory = PACKAGE_DIR + '/utils/'
+        if not os.path.exists(utils_directory):
+            os.makedirs(utils_directory)
+
+        process = subprocess.Popen(['curl -L https://github.com/apple/swift/tarball/swift-DEVELOPMENT-SNAPSHOT-2019-01-24-a | tar -xz --strip-components 2 --include=*utils/gyb* -C ' + utils_directory], shell=True, stdout=subprocess.PIPE)
+        process.wait()
+
 
 def check_rsync():
     with open(os.devnull, 'w')  as DEVNULL:
@@ -88,6 +105,7 @@ def check_rsync():
 def generate_gyb_files(verbose, add_source_locations):
     print('** Generating gyb Files **')
 
+    download_gyb()
     check_gyb_exec()
     check_rsync()
 
